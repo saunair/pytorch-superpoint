@@ -44,6 +44,8 @@ def train_base(config, output_dir, args):
 # def train_joint_dsac():
 #     pass
 
+import time
+
 def train_joint(config, output_dir, args):
     assert 'train_iter' in config
 
@@ -62,10 +64,10 @@ def train_joint(config, output_dir, args):
         exper_name=args.exper_name, date=True))
     ## save data
     save_path = get_save_path(output_dir)
-
     # data loading
     # data = dataLoader(config, dataset='syn', warp_input=True)
     data = dataLoader(config, dataset=task, warp_input=True)
+    
     train_loader, val_loader = data['train_loader'], data['val_loader']
 
     datasize(train_loader, config, tag='train')
@@ -85,6 +87,8 @@ def train_joint(config, output_dir, args):
     train_agent.val_loader = val_loader
 
     # load model initiates the model and load the pretrained model (if any)
+
+    t = time.time()
     train_agent.loadModel()
     train_agent.dataParallel()
 
@@ -95,6 +99,8 @@ def train_joint(config, output_dir, args):
         print ("press ctrl + c, save model!")
         train_agent.saveModel()
         pass
+    t = time.time()
+    print(f"training done {time.time() - t}")
 
 if __name__ == '__main__':
     # global var
@@ -131,7 +137,7 @@ if __name__ == '__main__':
                         datefmt='%m/%d/%Y %H:%M:%S', level=logging.DEBUG)
 
     with open(args.config, 'r') as f:
-        config = yaml.load(f)
+        config = yaml.load(f, yaml.Loader)
     # EXPER_PATH from settings.py
     output_dir = os.path.join(EXPER_PATH, args.exper_name)
     os.makedirs(output_dir, exist_ok=True)

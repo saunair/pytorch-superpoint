@@ -529,8 +529,8 @@ def flattenDetection(semi, tensor=False):
 def sample_homo(image):
     import tensorflow as tf
     from utils.homographies import sample_homography
-    H = sample_homography(tf.shape(image)[:2])
-    with tf.Session():
+    H = sample_homography(tf.shape(input=image)[:2])
+    with tf.compat.v1.Session():
         H_ = H.eval()
     H_ = np.concatenate((H_, np.array([1])[:, np.newaxis]), axis=1)
     # warped_im = tf.contrib.image.transform(image, H, interpolation="BILINEAR")

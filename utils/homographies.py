@@ -193,9 +193,9 @@ def sample_homography(
         if not allow_artifacts:
             perspective_amplitude_x = min(perspective_amplitude_x, margin)
             perspective_amplitude_y = min(perspective_amplitude_y, margin)
-        perspective_displacement = tf.truncated_normal([1], 0., perspective_amplitude_y/2)
-        h_displacement_left = tf.truncated_normal([1], 0., perspective_amplitude_x/2)
-        h_displacement_right = tf.truncated_normal([1], 0., perspective_amplitude_x/2)
+        perspective_displacement = tf.random.truncated_normal([1], 0., perspective_amplitude_y/2)
+        h_displacement_left = tf.random.truncated_normal([1], 0., perspective_amplitude_x/2)
+        h_displacement_right = tf.random.truncated_normal([1], 0., perspective_amplitude_x/2)
         pts2 += tf.stack([tf.concat([h_displacement_left, perspective_displacement], 0),
                           tf.concat([h_displacement_left, -perspective_displacement], 0),
                           tf.concat([h_displacement_right, perspective_displacement], 0),
@@ -206,33 +206,33 @@ def sample_homography(
     # sample several scales, check collision with borders, randomly pick a valid one
     if scaling:
         scales = tf.concat(
-                [[1.], tf.truncated_normal([n_scales], 1, scaling_amplitude/2)], 0)
-        center = tf.reduce_mean(pts2, axis=0, keepdims=True)
+                [[1.], tf.random.truncated_normal([n_scales], 1, scaling_amplitude/2)], 0)
+        center = tf.reduce_mean(input_tensor=pts2, axis=0, keepdims=True)
         scaled = tf.expand_dims(pts2 - center, axis=0) * tf.expand_dims(
                 tf.expand_dims(scales, 1), 1) + center
         if allow_artifacts:
             valid = tf.range(n_scales)  # all scales are valid except scale=1
         else:
-            valid = tf.where(tf.reduce_all((scaled >= 0.) & (scaled < 1.), [1, 2]))[:, 0]
-        idx = valid[tf.random_uniform((), maxval=tf.shape(valid)[0], dtype=tf.int32)]
+            valid = tf.compat.v1.where(tf.reduce_all(input_tensor=(scaled >= 0.) & (scaled < 1.), axis=[1, 2]))[:, 0]
+        idx = valid[tf.random.uniform((), maxval=tf.shape(input=valid)[0], dtype=tf.int32)]
         pts2 = scaled[idx]
 
     # Random translation
     if translation:
-        t_min, t_max = tf.reduce_min(pts2, axis=0), tf.reduce_min(1 - pts2, axis=0)
+        t_min, t_max = tf.reduce_min(input_tensor=pts2, axis=0), tf.reduce_min(input_tensor=1 - pts2, axis=0)
         if allow_artifacts:
             t_min += translation_overflow
             t_max += translation_overflow
-        pts2 += tf.expand_dims(tf.stack([tf.random_uniform((), -t_min[0], t_max[0]),
-                                         tf.random_uniform((), -t_min[1], t_max[1])]),
+        pts2 += tf.expand_dims(tf.stack([tf.random.uniform((), -t_min[0], t_max[0]),
+                                         tf.random.uniform((), -t_min[1], t_max[1])]),
                                axis=0)
 
     # Random rotation
     # sample several rotations, check collision with borders, randomly pick a valid one
     if rotation:
-        angles = tf.lin_space(tf.constant(-max_angle), tf.constant(max_angle), n_angles)
+        angles = tf.linspace(tf.constant(-max_angle), tf.constant(max_angle), n_angles)
         angles = tf.concat([angles, [0.]], axis=0)  # in case no rotation is valid
-        center = tf.reduce_mean(pts2, axis=0, keepdims=True)
+        center = tf.reduce_mean(input_tensor=pts2, axis=0, keepdims=True)
         rot_mat = tf.reshape(tf.stack([tf.cos(angles), -tf.sin(angles), tf.sin(angles),
                                        tf.cos(angles)], axis=1), [-1, 2, 2])
         rotated = tf.matmul(
@@ -241,13 +241,13 @@ def sample_homography(
         if allow_artifacts:
             valid = tf.range(n_angles)  # all angles are valid, except angle=0
         else:
-            valid = tf.where(tf.reduce_all((rotated >= 0.) & (rotated < 1.),
+            valid = tf.compat.v1.where(tf.reduce_all(input_tensor=(rotated >= 0.) & (rotated < 1.),
                                            axis=[1, 2]))[:, 0]
-        idx = valid[tf.random_uniform((), maxval=tf.shape(valid)[0], dtype=tf.int32)]
+        idx = valid[tf.random.uniform((), maxval=tf.shape(input=valid)[0], dtype=tf.int32)]
         pts2 = rotated[idx]
 
     # Rescale to actual size
-    shape = tf.to_float(shape[::-1])  # different convention [y, x]
+    shape = tf.cast(shape[::-1], dtype=tf.float32)  # different convention [y, x]
     pts1 *= tf.expand_dims(shape, axis=0)
     pts2 *= tf.expand_dims(shape, axis=0)
 
@@ -256,10 +256,10 @@ def sample_homography(
     def ay(p, q): return [0, 0, 0, p[0], p[1], 1, -p[0] * q[1], -p[1] * q[1]]
 
     a_mat = tf.stack([f(pts1[i], pts2[i]) for i in range(4) for f in (ax, ay)], axis=0)
-    p_mat = tf.transpose(tf.stack(
+    p_mat = tf.transpose(a=tf.stack(
         [[pts2[i][j] for i in range(4) for j in range(2)]], axis=0))
-    homography = tf.transpose(tf.matrix_solve_ls(a_mat, p_mat, fast=True))
-    sess = tf.Session()
+    homography = tf.transpose(a=tf.linalg.lstsq(a_mat, p_mat, fast=True))
+    sess = tf.compat.v1.Session()
     with sess.as_default():
         homography = homography.eval()
     homography = np.concatenate((homography, np.array([[1]])), axis=1)

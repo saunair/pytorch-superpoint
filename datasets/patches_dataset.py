@@ -74,7 +74,7 @@ class PatchesDataset(data.Dataset):
             return image
 
         def _warp_image(image):
-            H = sample_homography(tf.shape(image)[:2])
+            H = sample_homography(tf.shape(input=image)[:2])
             warped_im = tf.contrib.image.transform(image, H, interpolation="BILINEAR")
             return {'warped_im': warped_im, 'H': H}
 

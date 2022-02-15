@@ -93,8 +93,13 @@ model:
             method: '2d'
     other_settings: 'train 2d, gauss 0.5'
 
-retrain: True # set true for new model
-reset_iter: True
+training:
+    workers_test: 16
+    workers_train: 16
+    workers_val: 16
+
+retrain: False # set true for new model
+reset_iter: False
 
 train_iter: 200000 # 200000
 tensorboard_interval: 1000 # 200
