@@ -1,9 +1,9 @@
 data:
     name: 'kitti'
     dataset: 'Kitti_inh' # 'Kitti'
-    root:  './datasets/KITTI/' # /data/kitti/kitti_wVal
+    root:  '/scratch/aiscience/data/external/kitti' # /data/kitti/kitti_wVal
     root_split_txt: 'datasets/kitti_split'   
-    labels: logs/magicpoint_synth20_homoAdapt100_kitti_h384_labels/predictions
+    labels: /scratch/aiscience/logs/superpoint/magicpoint_base_homoAdapt_kitti/predictions
 
     gaussian_label:
         enable: true
@@ -52,8 +52,8 @@ data:
 front_end_model: 'Train_model_heatmap'  # 'Train_model_frontend'
 
 training:
-    workers_train: 4 # 16
-    workers_val: 2 # 2
+    workers_train: 32 
+    workers_val: 16 
 
 model:
     name: 'SuperPointNet_gauss2'

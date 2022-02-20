@@ -257,7 +257,9 @@ def create_non_correspondences(uv_b_matches, img_b_shape, num_non_matches_per_ma
 
     diffs_0 = copied_uv_b_matches_0 - uv_b_non_matches[0].type(dtype_float)
     diffs_1 = copied_uv_b_matches_1 - uv_b_non_matches[1].type(dtype_float)
-
+    
+    diffs_0 = diffs_0.contiguous()
+    diffs_1 = diffs_1.contiguous()
     diffs_0_flattened = diffs_0.view(-1,1)
     diffs_1_flattened = diffs_1.view(-1,1)
 

@@ -40,9 +40,9 @@ def draw_matches_cv(data, matches, plot_points=True):
         return img
     img1 = to3dim(data['image1'])
     img2 = to3dim(data['image2'])
-    img1 = np.concatenate([img1, img1, img1], axis=2)
-    img2 = np.concatenate([img2, img2, img2], axis=2)
-    return cv2.drawMatches(img1, keypoints1, img2, keypoints2, matches,
+    img1 = np.concatenate([img1, img1, img1], axis=2) * 255
+    img2 = np.concatenate([img2, img2, img2], axis=2) * 255
+    return cv2.drawMatches(np.array(img1, dtype=np.uint8), keypoints1, np.array(img2, dtype=np.uint8), keypoints2, matches,
                            None, matchColor=(0,255,0), singlePointColor=(0, 0, 255))
 
 def isfloat(value):
@@ -124,7 +124,10 @@ def evaluate(args, **options):
         # desc = data['desc']
         # warped_desc = data['warped_desc']
         # homography = data['homography']
-        real_H = data['homography']
+        try:
+            real_H = data['homography']
+        except KeyError:
+            import pdb; pdb.set_trace()
         image = data['image']
         warped_image = data['warped_image']
         keypoints = data['prob'][:, [1, 0]]

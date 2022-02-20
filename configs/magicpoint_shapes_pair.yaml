@@ -109,5 +109,5 @@ validation_size: 10
 train_show_interval: 1000 # one show of the current training from to Tensorboard every N training steps
 seed: 0
 
-# pretrained: 'logs/superpoint_syn_heat1_0/checkpoints/superPointNet_100000_checkpoint.pth.tar'
+pretrained: 'logs/magicpoint_synth_t2/checkpoints/superPointNet_100000_checkpoint.pth.tar'
 

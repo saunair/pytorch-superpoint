@@ -73,7 +73,6 @@ def train_joint(config, output_dir, args):
     datasize(train_loader, config, tag='train')
     datasize(val_loader, config, tag='val')
     # init the training agent using config file
-    # from train_model_frontend import Train_model_frontend
     from utils.loader import get_module
     train_model_frontend = get_module('', config['front_end_model'])
 
@@ -87,8 +86,6 @@ def train_joint(config, output_dir, args):
     train_agent.val_loader = val_loader
 
     # load model initiates the model and load the pretrained model (if any)
-
-    t = time.time()
     train_agent.loadModel()
     train_agent.dataParallel()
 
