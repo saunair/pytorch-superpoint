@@ -250,7 +250,6 @@ def export_detector_homoAdapt_gpu(config, output_dir, args):
         print("==> Loading pre-trained network.")
         print("path: ", path)
         # This class runs the SuperPoint network and processes its outputs.
-
         fe = SuperPointFrontend_torch(
             config=config,
             weights_path=path,

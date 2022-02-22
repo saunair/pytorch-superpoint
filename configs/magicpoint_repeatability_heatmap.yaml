@@ -28,7 +28,7 @@ model:
     homography_adaptation:
         num: 0
     subpixel: 
-        enable: true
+        enable: False
         patch_size: 5
     rand_noise:
         enable: false
