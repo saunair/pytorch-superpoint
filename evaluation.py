@@ -31,7 +31,7 @@ def draw_matches_cv(data, matches, plot_points=True):
         print(f"matches_pts: {matches_pts}")
         # keypoints1, keypoints2 = [], []
 
-    inliers = data['inliers'].astype(bool)
+    #inliers = data['inliers'].astype(bool)
     # matches = np.array(data['matches'])[inliers].tolist()
     # matches = matches[inliers].tolist()
     def to3dim(img):
@@ -42,6 +42,7 @@ def draw_matches_cv(data, matches, plot_points=True):
     img2 = to3dim(data['image2'])
     img1 = np.concatenate([img1, img1, img1], axis=2) * 255
     img2 = np.concatenate([img2, img2, img2], axis=2) * 255
+    import pdb; pdb.set_trace()
     return cv2.drawMatches(np.array(img1, dtype=np.uint8), keypoints1, np.array(img2, dtype=np.uint8), keypoints2, matches,
                            None, matchColor=(0,255,0), singlePointColor=(0, 0, 255))
 
