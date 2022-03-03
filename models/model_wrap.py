@@ -77,10 +77,9 @@ class SuperPointFrontend_torch(object):
         #     # Train on GPU, deploy on GPU.
         #     self.net.load_state_dict(torch.load(weights_path))
 
-        # else:
+        else:
             # Train on GPU, deploy on CPU.
-
-            # trained = False
+            trained = False
         if trained:
             # if self.subpixel:
             #     model = 'SubpixelNet'
@@ -348,7 +347,8 @@ class SuperPointFrontend_torch(object):
             with torch.no_grad():
                 # outs = self.net.forward(inp, subpixel=self.subpixel)
                 outs = self.net.forward(inp)
-                # semi, coarse_desc = outs[0], outs[1]
+                #import pdb; pdb.set_trace() 
+                #semi, coarse_desc = outs[0], outs[1]
                 semi, coarse_desc = outs['semi'], outs['desc']
 
         # as tensor
