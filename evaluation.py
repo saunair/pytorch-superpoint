@@ -20,6 +20,7 @@ from tqdm import tqdm
 from utils.draw import plot_imgs
 from utils.logging import *
 
+
 def draw_matches_cv(data, matches, plot_points=True):
     if plot_points:
         keypoints1 = [cv2.KeyPoint(p[1], p[0], 1) for p in data['keypoints1']]
@@ -44,12 +45,14 @@ def draw_matches_cv(data, matches, plot_points=True):
     return cv2.drawMatches(np.array(img1, dtype=np.uint8), keypoints1, np.array(img2, dtype=np.uint8), keypoints2, matches,
                            None, matchColor=(0,255,0), singlePointColor=(0, 0, 255))
 
+
 def isfloat(value):
   try:
     float(value)
     return True
   except ValueError:
     return False
+
 
 def find_files_with_ext(directory, extension='.npz', if_int=True):
     # print(os.listdir(directory))
@@ -69,6 +72,7 @@ def to3dim(img):
     if img.ndim == 2:
         img = img[:, :, np.newaxis]
     return img
+
 
 def evaluate(args, **options):
     # path = '/home/yoyee/Documents/SuperPoint/superpoint/logs/outputs/superpoint_coco/'
@@ -93,7 +97,6 @@ def evaluate(args, **options):
         logging.info("reproduce = True")
         np.random.seed(0)
         print(f"test random # : np({np.random.rand(1)})")
-
 
     # create output dir
     if args.outputImg:
@@ -123,10 +126,7 @@ def evaluate(args, **options):
         # desc = data['desc']
         # warped_desc = data['warped_desc']
         # homography = data['homography']
-        try:
-            real_H = data['homography']
-        except KeyError:
-            import pdb; pdb.set_trace()
+        real_H = data['homography']
         image = data['image']
         warped_image = data['warped_image']
         keypoints = data['prob'][:, [1, 0]]
@@ -139,9 +139,11 @@ def evaluate(args, **options):
             rep, local_err = compute_repeatability(data, keep_k_points=top_K, distance_thresh=rep_thd, verbose=False)
             repeatability.append(rep)
             print("repeatability: %.2f"%(rep))
+
             if local_err > 0:
                 localization_err.append(local_err)
                 print('local_err: ', local_err)
+
             if args.outputImg:
                 # img = to3dim(image)
                 img = image
@@ -159,7 +161,6 @@ def evaluate(args, **options):
                 
                 plt.savefig(path_rep + '/' + f_num + '.png', dpi=300, bbox_inches='tight')
                 pass
-
 
         if args.homography:
             # estimate result
@@ -253,7 +254,6 @@ def evaluate(args, **options):
                           ", percentage: ", inliers.sum() / inliers.shape[0])
                     return inliers
             
-            
                 def computeAP(m_test, m_score):
                     from sklearn.metrics import average_precision_score
 
@@ -288,14 +288,13 @@ def evaluate(args, **options):
                     m_flip = flipArr(mscores[:,2])
         
                 if inliers.shape[0] > 0 and inliers.sum()>0:
-#                     m_flip = flipArr(m_flip)
+                    # m_flip = flipArr(m_flip)
                     # compute ap
                     ap = computeAP(inliers, m_flip)
                 else:
                     ap = 0
                 
                 mAP.append(ap)
-
 
             if args.outputImg:
                 # draw warping
@@ -369,11 +368,6 @@ def evaluate(args, **options):
                 draw_matches(image, warped_image, matches_temp, lw=1.0, 
                         filename=filename, show=False, if_fig=False)
 
-
-
-
-
-
     if args.repeatibility:
         repeatability_ave = np.array(repeatability).mean()
         localization_err_m = np.array(localization_err).mean()
@@ -393,8 +387,6 @@ def evaluate(args, **options):
 
         print("end")
 
-
-
     # save to files
     with open(save_file, "a") as myfile:
         myfile.write("path: " + path + '\n')
@@ -413,8 +405,6 @@ def evaluate(args, **options):
             if compute_map:
                 myfile.write("nn mean AP: " + str(mAP_m) + '\n')
             myfile.write("matching score: " + str(mscore_m) + '\n')
-
-
 
         if verbose:
             myfile.write("====== details =====" + '\n')
@@ -452,7 +442,6 @@ def evaluate(args, **options):
 
 if __name__ == '__main__':
     import argparse
-
 
     logging.basicConfig(format='[%(asctime)s %(levelname)s] %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S', level=logging.INFO)
