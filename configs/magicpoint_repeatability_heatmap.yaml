@@ -37,7 +37,10 @@ model:
     # pretrained: 'logs/superpoint_spollo_v0/checkpoints/superPointNet_40000_checkpoint.pth.tar'
     # pretrained: 'logs/superpoint_coco/checkpoints/superPointNet_180_checkpoint.pth.tar'
     #pretrained: 'logs/superpoint_coco_heat2_0/checkpoints/superPointNet_170000_checkpoint.pth.tar'
-    pretrained: '/scratch/aiscience/logs/superpoint/superpoint_coco/checkpoints/superPointNet_99800_checkpoint.pth.tar'
+    #pretrained: 'logs/superpoint_coco_heat2_0/checkpoints/superPointNet_170000_checkpoint.pth.tar'
+    pretrained: '/home/saurabh.nair/giant_nerfs/pytorch-superpoint-new/pretrained/superpoint_v1.pth'
+    # pretrained: '/scratch/aiscience/logs/superpoint/superpoint_coco/checkpoints/superPointNet_99800_checkpoint.pth.tar'
+    #pretrained: '/scratch/aiscience/logs/superpoint/superpoint_coco_pretrained_fixed/checkpoints/superPointNet_187400_checkpoint.pth.tar'
 
 
 

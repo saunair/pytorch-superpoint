@@ -62,11 +62,13 @@ class Val_model_heatmap(SuperPointFrontend_torch):
         # model = 'SuperPointNet'
         # params = self.config['model']['subpixel']['params']
         from utils.loader import modelLoader
+        self.model = "SuperPointNet_pretrained"
         self.net = modelLoader(model=self.model, **self.params)
 
         checkpoint = torch.load(self.weights_path,
                                 map_location=lambda storage, loc: storage)
-        self.net.load_state_dict(checkpoint['model_state_dict'])
+        #self.net.load_state_dict(checkpoint['model_state_dict'])
+        self.net.load_state_dict(checkpoint)
 
         self.net = self.net.to(self.device)
         logging.info('successfully load pretrained model from: %s', self.weights_path)
@@ -97,8 +99,11 @@ class Val_model_heatmap(SuperPointFrontend_torch):
 
         with torch.no_grad():
             outs = self.net(images)
-        semi = outs['semi']
-        self.outs = outs
+        
+        # replaced from original model to semi
+        semi = outs[0]
+        #semi = outs["semi"]
+        self.outs = {"semi": outs[0], "desc": outs[1]}
 
         channel = semi.shape[1]
         if channel == 64:

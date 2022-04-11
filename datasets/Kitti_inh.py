@@ -78,10 +78,10 @@ class Kitti_inh(Coco):
             if task == "train"
             else self.root_split_txt / "val.txt"
         )
-
         self.scenes = [
             # (label folder, raw image path)
-            (Path(self.root / folder[:10]/ folder[:-1]), Path(self.root / folder[:10]/ folder[:-1] / 'image_02' / 'data')) for folder in open(scene_list_path)
+            (Path(self.root / folder[:-1]), Path(self.root / folder[:-4] / 'image_02' / 'data') ) \
+                for folder in open(scene_list_path)
         ]
         # self.scenes_imgs = [
         #     Path(self.root / folder[:-4] / 'image_02' / 'data') for folder in open(scene_list_path)

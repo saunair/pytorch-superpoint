@@ -60,6 +60,7 @@ def train_joint(config, output_dir, args):
     with open(os.path.join(output_dir, 'config.yml'), 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
     # writer = SummaryWriter(getWriterPath(task=args.command, date=True))
+    import pdb; pdb.set_trace()
     writer = SummaryWriter(getWriterPath(task=args.command, 
         exper_name=args.exper_name, date=True))
     ## save data

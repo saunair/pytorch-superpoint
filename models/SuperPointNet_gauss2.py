@@ -38,8 +38,6 @@ class SuperPointNet_gauss2(torch.nn.Module):
         self.bnDb = nn.BatchNorm2d(d1)
         self.output = None
 
-
-
     def forward(self, x):
         """ Forward pass that jointly computes unprocessed point and descriptor
         tensors.

@@ -28,6 +28,7 @@ def get_save_path(output_dir):
     os.makedirs(save_path, exist_ok=True)
     return save_path
 
+
 def worker_init_fn(worker_id):
    """The function is designed for pytorch multi-process dataloader.
    Note that we use the pytorch random generator to generate a base_seed.
@@ -89,6 +90,7 @@ def dataLoader(config, dataset='syn', warp_input=False, train=True, val=True):
     return {'train_loader': train_loader, 'val_loader': val_loader,
             'train_set': train_set, 'val_set': val_set}
 
+
 def dataLoader_test(config, dataset='syn', warp_input=False, export_task='train'):
     import torchvision.transforms as transforms
     training_params = config.get('training', {})
@@ -144,6 +146,7 @@ def dataLoader_test(config, dataset='syn', warp_input=False, export_task='train'
         )
     return {'test_set': test_set, 'test_loader': test_loader}
 
+
 def get_module(path, name):
     import importlib
     if path == '':
@@ -152,9 +155,11 @@ def get_module(path, name):
         mod = importlib.import_module('{}.{}'.format(path, name))
     return getattr(mod, name)
 
+
 def get_model(name):
     mod = __import__('models.{}'.format(name), fromlist=[''])
     return getattr(mod, name)
+
 
 def modelLoader(model='SuperPointNet', **options):
     # create model
@@ -183,6 +188,7 @@ def pretrainedLoader(net, optimizer, epoch, path, mode='full', full_path=False):
         net.load_state_dict(checkpoint)
         # net.load_state_dict(torch.load(path,map_location=lambda storage, loc: storage))
     return net, optimizer, epoch
+
 
 if __name__ == '__main__':
     net = modelLoader(model='SuperPointNet')
